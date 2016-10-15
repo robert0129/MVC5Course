@@ -23,16 +23,16 @@ namespace MVC5Course.Models
     
         public int ClientId { get; set; }
         [Required]
-        [StringLength(10, ErrorMessage = "FirstName 最大不得超過 10 個字元")]
+        [StringLength(10, ErrorMessage = "{0} 最大不得超過 {1} 個字元")]
         public string FirstName { get; set; }
         [Required]
-        [StringLength(10, ErrorMessage = "MiddleName 最大不得超過 10 個字元")]
+        [StringLength(10, ErrorMessage = "{0} 最大不得超過 {1} 個字元")]
         public string MiddleName { get; set; }
         [Required]
-        [StringLength(10, ErrorMessage = "LastName 最大不得超過 10 個字元")]
+        [StringLength(10, ErrorMessage = "{0} 最大不得超過 {1} 個字元")]
         public string LastName { get; set; }
         [Required]
-        [RegularExpression("[MF]", ErrorMessage = "Gender 欄位只能輸入 M 或 F")]
+        [RegularExpression("[MF]", ErrorMessage = "{0} 欄位只能輸入 M 或 F")]
         public string Gender { get; set; }
         public Nullable<System.DateTime> DateOfBirth { get; set; }
         public Nullable<double> CreditRating { get; set; }
