@@ -16,6 +16,9 @@
             @Html.DisplayNameFor(model => model.ProductName)
         </th>
         <th>
+            @Html.DisplayNameFor(model => model.IsDeleted)
+        </th>
+        <th>
             @Html.DisplayNameFor(model => model.Price)
         </th>
         <th>
@@ -34,6 +37,9 @@
 
             @Html.ActionLink("加上驚嘆號", "Update", new { id = item.ProductId })
 
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.IsDeleted)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Price)
