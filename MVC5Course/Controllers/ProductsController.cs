@@ -15,7 +15,7 @@ namespace MVC5Course.Controllers
         //private FabricsEntities db = new FabricsEntities();
 
         ProductRepository repo =  RepositoryHelper.GetProductRepository();
-
+       
         //Modify Route ActionName
         [Route("products")]
         // GET: Products

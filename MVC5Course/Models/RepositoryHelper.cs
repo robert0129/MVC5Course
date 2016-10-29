@@ -5,8 +5,8 @@ namespace MVC5Course.Models
 		public static IUnitOfWork GetUnitOfWork()
 		{
 			return new EFUnitOfWork();
-		}		
-		
+		}
+        	
 		public static ClientRepository GetClientRepository()
 		{
 			var repository = new ClientRepository();
