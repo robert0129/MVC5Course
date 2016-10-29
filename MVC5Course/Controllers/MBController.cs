@@ -1,4 +1,5 @@
-﻿using MVC5Course.Models.ViewModels;
+﻿using MVC5Course.Models;
+using MVC5Course.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +11,9 @@ namespace MVC5Course.Controllers
     /// <summary>
     /// Model Binging Exercise
     /// </summary>
-    public class MBController : Controller
+    public class MBController : BaseController
     {
+        private FabricsEntities db = new FabricsEntities();
         // GET: MV
         public ActionResult Index()
         {
@@ -45,6 +47,31 @@ namespace MVC5Course.Controllers
 
         public ActionResult MyFromResult()
         {
+            return View();
+        }
+
+        ///
+        public ActionResult ProductList()
+        {
+            var data = db.Product.OrderByDescending( p => p.ProductId).Take(5);
+            return View(data);
+        }
+
+        public ActionResult BatchUpdate(MBProductsModel[] items)
+        {
+            if (ModelState.IsValid) {
+                foreach (var o in items) {
+                    Product product = db.Product.Find(o.ProductId);
+                    if (product != null) { 
+                    product.ProductName = o.ProductName;
+                    product.Price = o.Price;
+                    product.Stock = o.Stock;
+                    product.ProductId = o.ProductId;
+                    }
+                }
+                db.SaveChanges();
+                return RedirectToAction("ProductList");
+            }
             return View();
         }
     }
