@@ -54,5 +54,7 @@ namespace MVC5Course.Controllers
             db.Configuration.LazyLoadingEnabled = false;
             return Json(repo.GetTopData(5), JsonRequestBehavior.AllowGet);
         }
+
+
     }
 }

@@ -1,0 +1,22 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<div>@ViewData["Temp"]</div>
+
+ @using MVC5Course.Models.ViewModels
+
+@{
+    var c = ViewData["clv"] as ClientLoginViewModel;
+}
+
+<hr />
+
+The Data is from ViewData
+<div>@c.FirstName</div>
+
+The Data is from ViewBag
+<div>@ViewBag.clv.FirstName</div>
