@@ -19,7 +19,8 @@ namespace MVC5Course.Controllers
         // GET: Products
         public ActionResult Index()
         {
-            return View(repo.All().OrderByDescending(p => p.ProductId).Take(10).ToList());
+            //return View(repo.All().OrderByDescending(p => p.ProductId).Take(10).ToList());
+            return View(repo.GetTopData(5));
             //return View(db.Product.OrderByDescending(p => p.ProductId).Take(10).ToList());
         }
 
