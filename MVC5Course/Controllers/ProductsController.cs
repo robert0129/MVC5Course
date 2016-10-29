@@ -16,7 +16,8 @@ namespace MVC5Course.Controllers
 
         ProductRepository repo =  RepositoryHelper.GetProductRepository();
 
-        [Route("products/list")]
+        //Modify Route ActionName
+        [Route("products")]
         // GET: Products
         public ActionResult Index()
         {
