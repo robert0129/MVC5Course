@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MVC5Course.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,7 @@ namespace MVC5Course.Controllers
 {
     public class ARController : BaseController
     {
+        ProductRepository repo = RepositoryHelper.GetProductRepository();
         // GET: AR
         public ActionResult Index()
         {
@@ -44,6 +46,13 @@ namespace MVC5Course.Controllers
         {
             var fpath = Server.MapPath("~/Content/image/img.jpg");
             return File(fpath, "image/jpg", "wolfer.jpg");
+        }
+
+        public ActionResult JsonResultTest()
+        {
+            var db = repo.UnitOfWork.Context;
+            db.Configuration.LazyLoadingEnabled = false;
+            return Json(repo.GetTopData(5), JsonRequestBehavior.AllowGet);
         }
     }
 }
