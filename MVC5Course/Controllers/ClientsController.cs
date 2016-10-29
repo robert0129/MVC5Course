@@ -11,6 +11,7 @@ using MVC5Course.Models.ViewModels;
 
 namespace MVC5Course.Controllers
 {
+    [myactionfilter]
     public class ClientsController : Controller
     {
         private FabricsEntities db = new FabricsEntities();
