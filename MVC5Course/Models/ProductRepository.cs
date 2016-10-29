@@ -8,7 +8,7 @@ namespace MVC5Course.Models
 	{
         public override IQueryable<Product> All()
         {
-            return base.All().Where(p => p.IsDeleted == false);
+            return base.All().Where(p => p.isDeleted == false);
         }
         public Product Find(int id)
         {
@@ -23,7 +23,7 @@ namespace MVC5Course.Models
 
         public override void Delete(Product entity)
         {
-            entity.IsDeleted = true;
+            entity.isDeleted = true;
         }
     }
 

@@ -41,7 +41,7 @@ namespace MVC5Course.Models
         [Required]
         public Nullable<decimal> Stock { get; set; }
         [Required]
-        public bool IsDeleted { get; set; }
+        public bool isDeleted { get; set; }
     
         public virtual ICollection<OrderLine> OrderLine { get; set; }
     }

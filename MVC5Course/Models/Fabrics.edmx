@@ -60,14 +60,14 @@
             <PropertyRef Name="ProductId" />
           </Key>
           <Property Name="ProductId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="ProductName" Type="nvarchar" MaxLength="80" />
+          <Property Name="ProductName" Type="varchar" MaxLength="80" />
           <Property Name="Price" Type="smallmoney" />
           <Property Name="Active" Type="bit" />
           <Property Name="Stock" Type="numeric" Precision="18" Scale="3" />
-          <Property Name="Is刪除" Type="bit" Nullable="false" />
+          <Property Name="isDeleted" Type="bit" Nullable="false" />
         </EntityType>
         <!--產生期間發現錯誤:
-警告 6002: 資料表/檢視 'C:\PROJECTS\MVC5COURSE\MVC5COURSE\APP_DATA\FABRICS.MDF.dbo.vw_ClientContribution' 未定義主索引鍵。已推斷此索引鍵，並將定義建立成唯讀的資料表/檢視。-->
+警告 6002: 資料表/檢視 'D:\GITHUB\MVC5CLASS\MVC5COURSE\APP_DATA\FABRICS.MDF.dbo.vw_ClientContribution' 未定義主索引鍵。已推斷此索引鍵，並將定義建立成唯讀的資料表/檢視。-->
         <EntityType Name="vw_ClientContribution">
           <Key>
             <PropertyRef Name="ClientId" />
@@ -185,7 +185,7 @@
           <Property Name="Latitude" Type="Double" />
           <Property Name="Notes" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Occupation" Relationship="Self.FK_Client_Occupation" FromRole="Client" ToRole="Occupation" />
-          <NavigationProperty Name="Order" Relationship="Self.fk_Order_ClientId" FromRole="Client" ToRole="Order" />
+          <NavigationProperty Name="Order" Relationship="FabricsModel.fk_Order_ClientId" FromRole="Client" ToRole="Order" />
         </EntityType>
         <EntityType Name="Occupation">
           <Key>
@@ -194,31 +194,6 @@
           <Property Name="OccupationId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="OccupationName" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Client" Relationship="Self.FK_Client_Occupation" FromRole="Occupation" ToRole="Client" />
-        </EntityType>
-        <EntityType Name="Order">
-          <Key>
-            <PropertyRef Name="OrderId" />
-          </Key>
-          <Property Name="OrderId" Type="Int32" Nullable="false" />
-          <Property Name="ClientId" Type="Int32" />
-          <Property Name="OrderDate" Type="DateTime" Precision="3" />
-          <Property Name="OrderTotal" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="OrderStatus" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
-          <NavigationProperty Name="Client" Relationship="Self.fk_Order_ClientId" FromRole="Order" ToRole="Client" />
-          <NavigationProperty Name="OrderLine" Relationship="Self.fk_OrderLine_OrderId" FromRole="Order" ToRole="OrderLine" />
-        </EntityType>
-        <EntityType Name="OrderLine">
-          <Key>
-            <PropertyRef Name="OrderId" />
-            <PropertyRef Name="LineNumber" />
-          </Key>
-          <Property Name="OrderId" Type="Int32" Nullable="false" />
-          <Property Name="LineNumber" Type="Int32" Nullable="false" />
-          <Property Name="ProductId" Type="Int32" Nullable="false" />
-          <Property Name="Qty" Type="Decimal" Precision="18" Scale="3" Nullable="false" />
-          <Property Name="LineTotal" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <NavigationProperty Name="Order" Relationship="Self.fk_OrderLine_OrderId" FromRole="OrderLine" ToRole="Order" />
-          <NavigationProperty Name="Product" Relationship="FabricsModel.fk_OrderLine_ProductId" FromRole="OrderLine" ToRole="Product" />
         </EntityType>
         <Association Name="FK_Client_Occupation">
           <End Role="Occupation" Type="Self.Occupation" Multiplicity="0..1" />
@@ -232,9 +207,88 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityContainer Name="FabricsEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Client" EntityType="Self.Client" />
+          <EntitySet Name="Occupation" EntityType="Self.Occupation" />
+          <AssociationSet Name="FK_Client_Occupation" Association="Self.FK_Client_Occupation">
+            <End Role="Occupation" EntitySet="Occupation" />
+            <End Role="Client" EntitySet="Client" />
+          </AssociationSet>
+          <FunctionImport Name="usp_GetClientContribution" ReturnType="Collection(FabricsModel.usp_GetClientContribution_Result)">
+          <Parameter Name="keyword" Mode="In" Type="String" />
+          </FunctionImport>
+          <EntitySet Name="Order" EntityType="FabricsModel.Order" />
+          <EntitySet Name="OrderLine" EntityType="FabricsModel.OrderLine" />
+          <EntitySet Name="Product" EntityType="FabricsModel.Product" />
+          <EntitySet Name="vw_ClientContribution" EntityType="FabricsModel.vw_ClientContribution" />
+          <AssociationSet Name="fk_Order_ClientId" Association="FabricsModel.fk_Order_ClientId">
+            <End Role="Client" EntitySet="Client" />
+            <End Role="Order" EntitySet="Order" />
+          </AssociationSet>
+          <AssociationSet Name="fk_OrderLine_OrderId" Association="FabricsModel.fk_OrderLine_OrderId">
+            <End Role="Order" EntitySet="Order" />
+            <End Role="OrderLine" EntitySet="OrderLine" />
+          </AssociationSet>
+          <AssociationSet Name="fk_OrderLine_ProductId" Association="FabricsModel.fk_OrderLine_ProductId">
+            <End Role="Product" EntitySet="Product" />
+            <End Role="OrderLine" EntitySet="OrderLine" />
+          </AssociationSet>
+          </EntityContainer>
+        <ComplexType Name="usp_GetClientContribution_Result">
+          <Property Type="Int32" Name="ClientId" Nullable="false" />
+          <Property Type="String" Name="FirstName" Nullable="true" MaxLength="40" />
+          <Property Type="String" Name="LastName" Nullable="true" MaxLength="40" />
+          <Property Type="Decimal" Name="OrderTotal" Nullable="true" Precision="38" Scale="2" />
+        </ComplexType>
+        <EntityType Name="Order">
+          <Key>
+            <PropertyRef Name="OrderId" />
+          </Key>
+          <Property Name="OrderId" Type="Int32" Nullable="false" />
+          <Property Name="ClientId" Type="Int32" />
+          <Property Name="OrderDate" Type="DateTime" Precision="3" />
+          <Property Name="OrderTotal" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="OrderStatus" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <NavigationProperty Name="Client" Relationship="FabricsModel.fk_Order_ClientId" FromRole="Order" ToRole="Client" />
+          <NavigationProperty Name="OrderLine" Relationship="FabricsModel.fk_OrderLine_OrderId" FromRole="Order" ToRole="OrderLine" />
+        </EntityType>
+        <EntityType Name="OrderLine">
+          <Key>
+            <PropertyRef Name="OrderId" />
+            <PropertyRef Name="LineNumber" />
+          </Key>
+          <Property Name="OrderId" Type="Int32" Nullable="false" />
+          <Property Name="LineNumber" Type="Int32" Nullable="false" />
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="Qty" Type="Decimal" Nullable="false" Precision="18" Scale="3" />
+          <Property Name="LineTotal" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <NavigationProperty Name="Order" Relationship="FabricsModel.fk_OrderLine_OrderId" FromRole="OrderLine" ToRole="Order" />
+          <NavigationProperty Name="Product" Relationship="FabricsModel.fk_OrderLine_ProductId" FromRole="OrderLine" ToRole="Product" />
+        </EntityType>
+        <EntityType Name="Product">
+          <Key>
+            <PropertyRef Name="ProductId" />
+          </Key>
+          <Property Name="ProductId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductName" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="Price" Type="Decimal" Precision="10" Scale="4" />
+          <Property Name="Active" Type="Boolean" />
+          <Property Name="Stock" Type="Decimal" Precision="18" Scale="3" />
+          <Property Name="isDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="OrderLine" Relationship="FabricsModel.fk_OrderLine_ProductId" FromRole="Product" ToRole="OrderLine" />
+        </EntityType>
+        <EntityType Name="vw_ClientContribution">
+          <Key>
+            <PropertyRef Name="ClientId" />
+          </Key>
+          <Property Name="ClientId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="LastName" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="OrderTotal" Type="Decimal" Precision="38" Scale="2" />
+        </EntityType>
         <Association Name="fk_Order_ClientId">
-          <End Role="Client" Type="Self.Client" Multiplicity="0..1" />
-          <End Role="Order" Type="Self.Order" Multiplicity="*" />
+          <End Type="FabricsModel.Client" Role="Client" Multiplicity="0..1" />
+          <End Type="FabricsModel.Order" Role="Order" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Client">
               <PropertyRef Name="ClientId" />
@@ -245,8 +299,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="fk_OrderLine_OrderId">
-          <End Role="Order" Type="Self.Order" Multiplicity="1" />
-          <End Role="OrderLine" Type="Self.OrderLine" Multiplicity="*" />
+          <End Type="FabricsModel.Order" Role="Order" Multiplicity="1" />
+          <End Type="FabricsModel.OrderLine" Role="OrderLine" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Order">
               <PropertyRef Name="OrderId" />
@@ -256,45 +310,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="FabricsEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Client" EntityType="Self.Client" />
-          <EntitySet Name="Occupation" EntityType="Self.Occupation" />
-          <EntitySet Name="Order" EntityType="Self.Order" />
-          <EntitySet Name="OrderLine" EntityType="Self.OrderLine" />
-          <AssociationSet Name="FK_Client_Occupation" Association="Self.FK_Client_Occupation">
-            <End Role="Occupation" EntitySet="Occupation" />
-            <End Role="Client" EntitySet="Client" />
-          </AssociationSet>
-          <AssociationSet Name="fk_Order_ClientId" Association="Self.fk_Order_ClientId">
-            <End Role="Client" EntitySet="Client" />
-            <End Role="Order" EntitySet="Order" />
-          </AssociationSet>
-          <AssociationSet Name="fk_OrderLine_OrderId" Association="Self.fk_OrderLine_OrderId">
-            <End Role="Order" EntitySet="Order" />
-            <End Role="OrderLine" EntitySet="OrderLine" />
-          </AssociationSet>
-          <EntitySet Name="Product" EntityType="FabricsModel.Product" />
-          <AssociationSet Name="fk_OrderLine_ProductId" Association="FabricsModel.fk_OrderLine_ProductId">
-            <End Role="Product" EntitySet="Product" />
-            <End Role="OrderLine" EntitySet="OrderLine" />
-          </AssociationSet>
-          <EntitySet Name="vw_ClientContribution" EntityType="FabricsModel.vw_ClientContribution" />
-          <FunctionImport Name="usp_GetClientContribution" ReturnType="Collection(FabricsModel.usp_GetClientContribution_Result)">
-            <Parameter Name="keyword" Mode="In" Type="String" />
-          </FunctionImport>
-        </EntityContainer>
-        <EntityType Name="Product">
-          <Key>
-            <PropertyRef Name="ProductId" />
-          </Key>
-          <Property Name="ProductId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ProductName" Type="String" MaxLength="80" FixedLength="false" Unicode="true" />
-          <Property Name="Price" Type="Decimal" Precision="10" Scale="4" />
-          <Property Name="Active" Type="Boolean" />
-          <Property Name="Stock" Type="Decimal" Precision="18" Scale="3" />
-          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="OrderLine" Relationship="FabricsModel.fk_OrderLine_ProductId" FromRole="Product" ToRole="OrderLine" />
-        </EntityType>
         <Association Name="fk_OrderLine_ProductId">
           <End Type="FabricsModel.Product" Role="Product" Multiplicity="1" />
           <End Type="FabricsModel.OrderLine" Role="OrderLine" Multiplicity="*" />
@@ -307,22 +322,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="vw_ClientContribution">
-          <Key>
-            <PropertyRef Name="ClientId" />
-          </Key>
-          <Property Name="ClientId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FirstName" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
-          <Property Name="LastName" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
-          <Property Name="OrderTotal" Type="Decimal" Precision="38" Scale="2" />
-        </EntityType>
-        <ComplexType Name="usp_GetClientContribution_Result">
-          <Property Type="Int32" Name="ClientId" Nullable="false" />
-          <Property Type="String" Name="FirstName" Nullable="true" MaxLength="40" />
-          <Property Type="String" Name="LastName" Nullable="true" MaxLength="40" />
-          <Property Type="Decimal" Name="OrderTotal" Nullable="true" Precision="38" Scale="2" />
-        </ComplexType>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -359,32 +359,42 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="usp_GetClientContribution" FunctionName="FabricsModel.Store.usp_GetClientContribution">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="FabricsModel.usp_GetClientContribution_Result">
+                <ScalarProperty Name="ClientId" ColumnName="ClientId" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="OrderTotal" ColumnName="OrderTotal" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
           <EntitySetMapping Name="Order">
             <EntityTypeMapping TypeName="FabricsModel.Order">
               <MappingFragment StoreEntitySet="Order">
-                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
-                <ScalarProperty Name="ClientId" ColumnName="ClientId" />
-                <ScalarProperty Name="OrderDate" ColumnName="OrderDate" />
-                <ScalarProperty Name="OrderTotal" ColumnName="OrderTotal" />
                 <ScalarProperty Name="OrderStatus" ColumnName="OrderStatus" />
+                <ScalarProperty Name="OrderTotal" ColumnName="OrderTotal" />
+                <ScalarProperty Name="OrderDate" ColumnName="OrderDate" />
+                <ScalarProperty Name="ClientId" ColumnName="ClientId" />
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="OrderLine">
             <EntityTypeMapping TypeName="FabricsModel.OrderLine">
               <MappingFragment StoreEntitySet="OrderLine">
-                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
-                <ScalarProperty Name="LineNumber" ColumnName="LineNumber" />
-                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
-                <ScalarProperty Name="Qty" ColumnName="Qty" />
                 <ScalarProperty Name="LineTotal" ColumnName="LineTotal" />
+                <ScalarProperty Name="Qty" ColumnName="Qty" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="LineNumber" ColumnName="LineNumber" />
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Product">
             <EntityTypeMapping TypeName="FabricsModel.Product">
               <MappingFragment StoreEntitySet="Product">
-                <ScalarProperty Name="IsDeleted" ColumnName="Is刪除" />
+                <ScalarProperty Name="isDeleted" ColumnName="isDeleted" />
                 <ScalarProperty Name="Stock" ColumnName="Stock" />
                 <ScalarProperty Name="Active" ColumnName="Active" />
                 <ScalarProperty Name="Price" ColumnName="Price" />
@@ -403,17 +413,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="usp_GetClientContribution" FunctionName="FabricsModel.Store.usp_GetClientContribution">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="FabricsModel.usp_GetClientContribution_Result">
-                <ScalarProperty Name="ClientId" ColumnName="ClientId" />
-                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
-                <ScalarProperty Name="LastName" ColumnName="LastName" />
-                <ScalarProperty Name="OrderTotal" ColumnName="OrderTotal" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
-        </EntityContainerMapping>
+          </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
   </edmx:Runtime>
