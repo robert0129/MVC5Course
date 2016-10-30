@@ -1,4 +1,4 @@
-﻿@model MVC5Course.Models.Client
+﻿@model Client
 
 @{
     ViewBag.Title = "Edit";
@@ -17,7 +17,7 @@
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.ClientId)
 
-        <div class="form-group">
+        @*<div class="form-group">
             @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
@@ -143,7 +143,9 @@
                 @Html.EditorFor(model => model.Notes, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Notes, "", new { @class = "text-danger" })
             </div>
-        </div>
+        </div>*@
+
+        @Html.EditorFor(m=>m)
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
