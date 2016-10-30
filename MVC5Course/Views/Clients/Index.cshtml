@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<MVC5Course.Models.Client>
 
+
 @{
     ViewBag.Title = "Index";
 }
@@ -10,7 +11,10 @@
     @Html.ActionLink("Create New", "Create")
 </p>
 <form action="">
-    <input type="search" name="search" value="" />
+    @Html.TextBox("search")
+    @*<input type="search" name="search" value="" />*@
+    @Html.DropDownList("CreditRating", "-- Please Choice --")
+    @Html.DropDownList("Gender", "-- Gender --")
     <input type="submit" value="搜尋" />
 </form>
 <table class="table">
