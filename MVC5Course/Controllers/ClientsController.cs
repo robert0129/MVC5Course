@@ -78,6 +78,7 @@ namespace MVC5Course.Controllers
             return View(client);
         }
 
+        //[Route("😚😚😚😚😚😚")]
         // GET: Clients/Edit/5
         public ActionResult Edit(int? id)
         {
