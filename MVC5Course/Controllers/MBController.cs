@@ -2,12 +2,14 @@
 using MVC5Course.Models.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
 namespace MVC5Course.Controllers
 {
+    [HandleError(ExceptionType = typeof(DbEntityValidationException), View = "Error_DbEntityValidationException")]
     /// <summary>
     /// Model Binging Exercise
     /// </summary>
@@ -59,9 +61,10 @@ namespace MVC5Course.Controllers
 
         public ActionResult BatchUpdate(MBProductsModel[] items)
         {
-            if (ModelState.IsValid) {
+            if (ModelState.IsValid) 
+            {
                 foreach (var o in items) {
-                    Product product = db.Product.Find(o.ProductId);
+                    var product = db.Product.Find(o.ProductId);
                     if (product != null) { 
                     product.ProductName = o.ProductName;
                     product.Price = o.Price;
@@ -77,7 +80,7 @@ namespace MVC5Course.Controllers
 
         public ActionResult MyError()
         {
-            throw new InvalidOperationException("Error");
+            //throw new InvalidOperationException("Error");
             return View();
         }
     }
