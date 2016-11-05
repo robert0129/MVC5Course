@@ -62,8 +62,15 @@
     @Html.PagedListPager(Model as IPagedList, (p) => Url.Action("Index", new { pageNo = p }), PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing("main"))
 
     <hr />
-   
+    @{
+    ViewBag.Msg = @"123
+    456
+    ";
+    }
     @section Scripts{
     <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
-
+    <script>
+        var str = '@Ajax.JavaScriptStringEncode(ViewBag.Msg)';
+        alert(str);
+    </script>
     }
