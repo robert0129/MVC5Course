@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using MVC5Course.Models;
+using PagedList;
 
 namespace MVC5Course.Controllers
 {
@@ -19,10 +20,14 @@ namespace MVC5Course.Controllers
         //Modify Route ActionName
         [Route("products")]
         // GET: Products
-        public ActionResult Index()
+        public ActionResult Index(int? pageNo)
         {
+            var data = repo.All().OrderBy(p => p.ProductId).AsQueryable();
+            var pNo = pageNo ?? 1;
+            var t = data.ToPagedList(pNo, 3);
+
             //return View(repo.All().OrderByDescending(p => p.ProductId).Take(10).ToList());
-            return View(repo.GetTopData(5));
+            return View(data.ToPagedList(pNo, 3));
             //return View(db.Product.OrderByDescending(p => p.ProductId).Take(10).ToList());
         }
 

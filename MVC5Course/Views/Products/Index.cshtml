@@ -1,56 +1,69 @@
 ﻿@model IEnumerable<MVC5Course.Models.Product>
 
-@{
+    @{
     ViewBag.Title = "Index";
-}
+    if (IsAjax) {
+    Layout = "";
+    }
+    }
 
-<h2>Index</h2>
+    <h2>Index</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.ProductName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Price)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Active)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Stock)
-        </th>
-        <th></th>
-    </tr>
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+    @Html.PagedListPager(Model as IPagedList, (p) => Url.Action("Index", new { pageNo = p }), PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing("main"))
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.ProductName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Price)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Active)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Stock)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ProductId }) |
-            @*@Html.ActionLink("Details", "Details", new { id=item.ProductId }) |*@
-            @Ajax.ActionLink("Details", "Details", new { id=item.ProductId }, new AjaxOptions(){ UpdateTargetId = "details"}) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ProductId })
-        </td>
-    </tr>
-}
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Active)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Stock)
+            </th>
+            <th></th>
+        </tr>
 
-</table>
+        @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Active)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Stock)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.ProductId }) |
+                @*@Html.ActionLink("Details", "Details", new { id=item.ProductId }) |*@
+                @Ajax.ActionLink("Details", "Details", new { id=item.ProductId }, new AjaxOptions(){ UpdateTargetId = "details"}) |
+                @Html.ActionLink("Delete", "Delete", new { id=item.ProductId })
+            </td>
+        </tr>
+        }
+
+    </table>
     <div id="details"></div>
-                      @section Scripts{
-                      <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
-                      }
+
+    @using PagedList;
+    @using PagedList.Mvc;
+    @Html.PagedListPager(Model as IPagedList, (p) => Url.Action("Index", new { pageNo = p }), PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing("main"))
+
+    <hr />
+   
+    @section Scripts{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+
+    }
