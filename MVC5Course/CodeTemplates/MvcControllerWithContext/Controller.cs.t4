@@ -46,6 +46,7 @@ using System.Web.Mvc;
 <# foreach (var namespaceName in RequiredNamespaces) { #>
 using <#= namespaceName #>;
 <# } #>
+using PagedList;
 
 namespace <#= Namespace #>
 {
@@ -77,9 +78,9 @@ namespace <#= Namespace #>
 
         // GET: <#= routePrefix #>
 <# if (UseAsync) { #>
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(int pageNo = 1)
 <# } else { #>
-        public ActionResult Index()
+        public ActionResult Index(int pageNo = 1)
 <# } #>
         {
 <#  var includeExpressions = "";
@@ -88,15 +89,15 @@ namespace <#= Namespace #>
 <# if(!String.IsNullOrEmpty(includeExpressions)) { #>
             var <#= entitySetVar #> = db.<#= entitySetName #><#= includeExpressions #>;
 <#		if (UseAsync) { #>
-            return View(await <#= entitySetVar #>.ToListAsync());
+            return View(await <#= entitySetVar #>.OrderBy(p => p.<#= primaryKeyName#>).AsQueryable().ToPagedList(pageNo, 10));
 <#		} else { #>
-            return View(<#= entitySetVar #>.ToList());
+            return View(<#= entitySetVar #>.OrderBy(p => p.<#= primaryKeyName#>).AsQueryable().ToPagedList(pageNo, 10));
 <#		} #>
 <# } else { #>
 <#		if (UseAsync) { #>
-            return View(await db.<#= entitySetName #><#= includeExpressions #>.ToListAsync());
+            return View(await db.<#= entitySetName #><#= includeExpressions #>.OrderBy(p => p.<#= primaryKeyName#>).AsQueryable().ToPagedList(pageNo, 10));
 <#		} else { #>
-            return View(db.<#= entitySetName #><#= includeExpressions #>.ToList());
+            return View(db.<#= entitySetName #><#= includeExpressions #>.OrderBy(p => p.<#= primaryKeyName#>).AsQueryable().ToPagedList(pageNo, 10));
 <#		} #>
 <# } #>
         }

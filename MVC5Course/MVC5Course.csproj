@@ -195,6 +195,8 @@
     <Compile Include="ActionFilter\myactionfilterAttribute.cs" />
     <Compile Include="Controllers\OrdersController.cs" />
     <Compile Include="Controllers\Products1Controller.cs" />
+    <Compile Include="Controllers\Products2Controller.cs" />
+    <Compile Include="Controllers\Products3Controller.cs" />
     <Compile Include="Controllers\ProductsAPIController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\VTController.cs" />
@@ -462,6 +464,16 @@
     <Content Include="Views\Products1\Details.cshtml" />
     <Content Include="Views\Products1\Edit.cshtml" />
     <Content Include="Views\Products1\Index.cshtml" />
+    <Content Include="Views\Products2\Create.cshtml" />
+    <Content Include="Views\Products2\Delete.cshtml" />
+    <Content Include="Views\Products2\Details.cshtml" />
+    <Content Include="Views\Products2\Edit.cshtml" />
+    <Content Include="Views\Products2\Index.cshtml" />
+    <Content Include="Views\Products3\Create.cshtml" />
+    <Content Include="Views\Products3\Delete.cshtml" />
+    <Content Include="Views\Products3\Details.cshtml" />
+    <Content Include="Views\Products3\Edit.cshtml" />
+    <Content Include="Views\Products3\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="CodeTemplates\ApiControllerEmpty\" />
